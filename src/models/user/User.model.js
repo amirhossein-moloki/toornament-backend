@@ -20,7 +20,6 @@ const userSchema = new mongoose.Schema(
       required: [true, 'شماره تلفن برای احراز هویت الزامی است.'],
       unique: true,
       trim: true,
-      // جدید: اعتبارسنجی فرمت شماره تلفن (مثال برای ایران)
       validate: {
         validator: function(v) {
           // این regex شماره‌هایی مثل +989123456789 را تایید می‌کند
@@ -35,7 +34,6 @@ const userSchema = new mongoose.Schema(
       sparse: true,
       trim: true,
       lowercase: true,
-      // جدید: محدودیت طول برای ایمیل
       maxlength: [100, 'ایمیل نمی‌تواند بیشتر از ۱۰۰ کاراکتر باشد.'],
     },
     password: {
@@ -83,13 +81,11 @@ const userSchema = new mongoose.Schema(
         default: 0,
         // نکته بسیار مهم: این مقدار همیشه به عنوان یک عدد صحیح (Integer) و
         // بر حسب کوچکترین واحد پولی (ریال) ذخیره می‌شود.
-        // از ذخیره مقادیر اعشاری یا تومان به صورت مستقیم جداً خودداری شود.
-        // مثال: 1500 تومان به صورت 15000 ریال ذخیره می‌شود.
         validate: {
           validator: Number.isInteger,
           message: 'موجودی کیف پول باید یک عدد صحیح باشد.'
         }
-      },
+    },
 
     // ================================================
     // ۴. اطلاعات اجتماعی (تیم‌ها)
@@ -97,6 +93,18 @@ const userSchema = new mongoose.Schema(
     teams: [
       { type: mongoose.Schema.Types.ObjectId, ref: 'Team' },
     ],
+
+    // ================================================
+    // جدید: فیلدهای موقت برای فرآیندهای تایید هویت با OTP
+    // ================================================
+    verificationCode: {
+      type: String,
+      select: false, // این فیلد در کوئری‌های عادی بازگردانده نشود
+    },
+    verificationCodeExpires: {
+      type: Date,
+      select: false, // این فیلد در کوئری‌های عادی بازگردانده نشود
+    },
   },
   {
     timestamps: true,
@@ -104,7 +112,7 @@ const userSchema = new mongoose.Schema(
 );
 
 // ================================================
-// ۵. Middleware و متدها
+// متدها و Middleware ها
 // ================================================
 
 // Middleware: هش کردن اتوماتیک پسورد قبل از ذخیره
