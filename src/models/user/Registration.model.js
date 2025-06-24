@@ -37,36 +37,42 @@ const registrationSchema = new mongoose.Schema(
       ],
       default: 'registered',
     },
+    // جدید: فیلد برای پیگیری وضعیت پرداخت ورودی
+    paymentStatus: {
+      type: String,
+      enum: ['paid', 'refunded', 'not_applicable'], // not_applicable برای تورنمنت‌های رایگان
+      default: 'not_applicable',
+    },
     rank: {
       type: Number,
     },
-    // اصلاحیه نهایی: مدل‌سازی ساختاریافته جوایز
     prizesWon: [
       {
-        // نوع جایزه برای پردازش ماشینی
         type: {
           type: String,
           required: true,
           enum: ['wallet_credit', 'virtual_item', 'physical_item', 'other'],
         },
-        // مقدار عددی جایزه (برای اعتبار کیف پول) - به صورت عدد صحیح و به ریال
         amount: {
           type: Number,
         },
-        // نام یا شناسه آیتم (برای جوایز مجازی یا فیزیکی)
         itemName: {
           type: String,
         },
-        // توضیحات تکمیلی برای نمایش به کاربر
         description: {
-            type: String,
-            required: true,
-        }
-      }
+          type: String,
+          required: true,
+        },
+      },
     ],
     checkInTime: {
-        type: Date,
-    }
+      type: Date,
+    },
+    // جدید: فیلد برای ذخیره لینک ویدیوی آپلود شده توسط کاربر
+    postTournamentVideoUrl: {
+      type: String,
+      trim: true,
+    },
   },
   {
     timestamps: true, // زمان دقیق ثبت‌نام (`createdAt`) را ذخیره می‌کند
@@ -76,7 +82,7 @@ const registrationSchema = new mongoose.Schema(
 // ================================================
 // ۳. ایندکس ترکیبی برای جلوگیری از تکرار
 // ================================================
-// تضمین می‌کند که یک کاربر نتواند بیش از یک بار در یک تورنمنت ثبت‌نام کند.
+// تضمین می‌کند که یک کاربر نتواند بیش از یک بار در یک تورنومنت ثبت‌نام کند.
 registrationSchema.index({ user: 1, tournament: 1 }, { unique: true });
 
 const Registration = mongoose.model('Registration', registrationSchema);
