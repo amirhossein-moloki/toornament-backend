@@ -19,6 +19,29 @@ const participantSchema = new mongoose.Schema({
   },
 });
 
+// جدید: اسکیمای نتایج برای بازی‌های بتل رویال
+const resultSchema = new mongoose.Schema({
+    participantId: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        refPath: 'results.participantModel'
+    },
+    participantModel: {
+        type: String,
+        required: true,
+        enum: ['User', 'Team']
+    },
+    rank: {
+        type: Number,
+        required: true
+    },
+    kills: {
+        type: Number,
+        default: 0
+    }
+});
+
+
 const matchSchema = new mongoose.Schema(
   {
     tournament: {
@@ -50,16 +73,15 @@ const matchSchema = new mongoose.Schema(
     },
     participants: {
       type: [participantSchema],
-      // اعتبارسنجی برای اطمینان از اینکه هر مسابقه دقیقا دو شرکت‌کننده دارد
-      validate: [
-          (val) => val.length <= 2, 
-          'یک مسابقه نمی‌تواند بیش از دو شرکت‌کننده داشته باشد.'
-      ]
+      // اعتبار سنجی تعداد شرکت کنندگان حذف شد تا برای بتل رویال نیز قابل استفاده باشد
     },
+    // این فیلد برای بازی‌های رودررو (1v1, 5v5) استفاده می‌شود
     winner: {
       participantId: mongoose.Schema.Types.ObjectId,
       participantModel: String,
     },
+    // جدید: این فیلد برای ثبت نتایج کامل بازی‌های بتل رویال استفاده می‌شود
+    results: [resultSchema],
     reportedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
@@ -75,19 +97,21 @@ const matchSchema = new mongoose.Schema(
 
 /**
  * @description Middleware برای اعمال قوانین یکپارچگی داده قبل از ذخیره‌سازی.
- * این تابع تضمین می‌کند که یک مسابقه نمی‌تواند بدون برنده، 'completed' شود.
+ * این تابع تضمین می‌کند که یک مسابقه تکمیل شده، یا برنده (برای بازی‌های رودررو)
+ * یا لیست نتایج (برای بتل رویال) را داشته باشد.
  */
 matchSchema.pre('save', function(next) {
-  // اگر وضعیت به 'completed' تغییر کرده یا در حال ساخته شدن با این وضعیت است
   if (this.isModified('status') && this.status === 'completed') {
-    // چک کن که آیا فیلد winner به درستی مقداردهی شده است یا خیر
-    if (!this.winner || !this.winner.participantId) {
-      // اگر برنده‌ای وجود نداشت، یک خطا ایجاد کن تا از ذخیره شدن داده متناقض جلوگیری شود.
-      const err = new Error('یک مسابقه نمی‌تواند بدون تعیین برنده، تکمیل (completed) شود.');
+    const hasWinner = this.winner && this.winner.participantId;
+    const hasResults = this.results && this.results.length > 0;
+
+    // اگر مسابقه تکمیل شده ولی نه برنده‌ای دارد و نه لیستی از نتایج، خطا ایجاد کن
+    if (!hasWinner && !hasResults) {
+      const err = new Error('یک مسابقه تکمیل شده باید یا یک برنده مشخص یا لیستی از نتایج داشته باشد.');
       return next(err);
     }
   }
-  next(); // اگر مشکلی نبود، ادامه بده.
+  next();
 });
 
 
