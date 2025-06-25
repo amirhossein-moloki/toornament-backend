@@ -22,7 +22,6 @@ const userSchema = new mongoose.Schema(
       trim: true,
       validate: {
         validator: function(v) {
-          // این regex شماره‌هایی مثل +989123456789 را تایید می‌کند
           return /^\+98\d{10}$/.test(v);
         },
         message: props => `${props.value} یک فرمت شماره تلفن معتبر برای ایران نیست!`
@@ -79,8 +78,6 @@ const userSchema = new mongoose.Schema(
         type: Number,
         required: true,
         default: 0,
-        // نکته بسیار مهم: این مقدار همیشه به عنوان یک عدد صحیح (Integer) و
-        // بر حسب کوچکترین واحد پولی (ریال) ذخیره می‌شود.
         validate: {
           validator: Number.isInteger,
           message: 'موجودی کیف پول باید یک عدد صحیح باشد.'
@@ -95,15 +92,21 @@ const userSchema = new mongoose.Schema(
     ],
 
     // ================================================
-    // جدید: فیلدهای موقت برای فرآیندهای تایید هویت با OTP
+    // ۵. فیلدهای مدیریت احراز هویت
     // ================================================
+    refreshTokens: {
+      type: [String],
+      default: [],
+      // اصلاحیه نهایی طبق حکم دادگاه: جلوگیری از بازگشت این فیلد در کوئری‌های عمومی
+      select: false,
+    },
     verificationCode: {
       type: String,
-      select: false, // این فیلد در کوئری‌های عادی بازگردانده نشود
+      select: false,
     },
     verificationCodeExpires: {
       type: Date,
-      select: false, // این فیلد در کوئری‌های عادی بازگردانده نشود
+      select: false,
     },
   },
   {
@@ -115,7 +118,6 @@ const userSchema = new mongoose.Schema(
 // متدها و Middleware ها
 // ================================================
 
-// Middleware: هش کردن اتوماتیک پسورد قبل از ذخیره
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
   try {
@@ -127,7 +129,6 @@ userSchema.pre('save', async function (next) {
   }
 });
 
-// Method: چک کردن صحت پسورد در زمان لاگین
 userSchema.methods.isPasswordCorrect = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
