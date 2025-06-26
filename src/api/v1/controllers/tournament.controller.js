@@ -1,6 +1,6 @@
 import tournamentService from '../../services/tournament.service.js';
 import { asyncWrapper } from '../utils/async.wrapper.js';
-import { pick } from '../utils/pick.js'; // فرض بر وجود یک ابزار کمکی برای انتخاب فیلدها
+import { pick } from '../utils/pick.js';
 
 /**
  * @desc    دریافت لیست تورنومنت‌ها با صفحه‌بندی
@@ -27,8 +27,6 @@ const getTournamentById = asyncWrapper(async (req, res) => {
  * @desc    ایجاد یک تورنومنت جدید
  */
 const createTournament = asyncWrapper(async (req, res) => {
-  // اصلاحیه نهایی طبق حکم دادگاه: جلوگیری از آسیب‌پذیری Mass Assignment
-  // تنها فیلدهای مجاز از بدنه درخواست انتخاب می‌شوند.
   const allowedFields = [
     'name', 'game', 'structure', 'teamSize', 'maxParticipants', 'rules',
     'registrationStartDate', 'registrationEndDate', 'checkInStartDate',
@@ -36,19 +34,16 @@ const createTournament = asyncWrapper(async (req, res) => {
   ];
   const tournamentData = pick(req.body, allowedFields);
   
-  // شناسه سازمان‌دهنده به صورت امن از کاربر لاگین‌کرده اضافه می‌شود.
   tournamentData.organizer = req.user.id;
 
   const tournament = await tournamentService.createTournament(tournamentData);
-  res.status(201).json(tournament); // 201 Created
+  res.status(201).json(tournament);
 });
 
 /**
  * @desc    به‌روزرسانی یک تورنومنت موجود
  */
 const updateTournament = asyncWrapper(async (req, res) => {
-  // اصلاحیه نهایی: تنها فیلدهای مجاز برای به‌روزرسانی انتخاب می‌شوند.
-  // فیلدهای حساس مانند 'organizer' هرگز از ورودی کاربر گرفته نمی‌شوند.
   const allowedUpdates = [
     'name', 'game', 'status', 'structure', 'teamSize', 'maxParticipants', 'rules',
     'registrationStartDate', 'registrationEndDate', 'checkInStartDate',
@@ -65,7 +60,16 @@ const updateTournament = asyncWrapper(async (req, res) => {
  */
 const deleteTournament = asyncWrapper(async (req, res) => {
   await tournamentService.deleteTournamentById(req.params.id);
-  res.status(204).send(); // 204 No Content
+  res.status(204).send();
+});
+
+/**
+ * @desc    شروع تورنومنت و ساخت براکت‌ها
+ */
+const startTournament = asyncWrapper(async (req, res) => {
+    const { id } = req.params;
+    await tournamentService.startTournamentAndGenerateBrackets(id);
+    res.status(200).json({ message: 'تورنومنت با موفقیت شروع شد و براکت‌ها ایجاد شدند.' });
 });
 
 
@@ -75,4 +79,5 @@ export default {
   createTournament,
   updateTournament,
   deleteTournament,
+  startTournament, // تابع جدید اضافه شد
 };
