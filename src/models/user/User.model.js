@@ -97,7 +97,6 @@ const userSchema = new mongoose.Schema(
     refreshTokens: {
       type: [String],
       default: [],
-      // اصلاحیه نهایی طبق حکم دادگاه: جلوگیری از بازگشت این فیلد در کوئری‌های عمومی
       select: false,
     },
     verificationCode: {
@@ -115,7 +114,7 @@ const userSchema = new mongoose.Schema(
 );
 
 // ================================================
-// متدها و Middleware ها
+// متدهای Middleware و Instance
 // ================================================
 
 userSchema.pre('save', async function (next) {
@@ -132,6 +131,40 @@ userSchema.pre('save', async function (next) {
 userSchema.methods.isPasswordCorrect = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
+
+
+// ================================================
+// متدهای استاتیک (برای استفاده در سرویس‌ها)
+// ================================================
+
+/**
+ * @param {string} email - The email to check.
+ * @param {ObjectId} [excludeUserId] - An optional user id to exclude from the search.
+ * @returns {Promise<boolean>}
+ */
+userSchema.statics.isEmailTaken = async function (email, excludeUserId) {
+  const query = { email };
+  if (excludeUserId) {
+    query._id = { $ne: excludeUserId };
+  }
+  const user = await this.findOne(query);
+  return !!user;
+};
+
+/**
+ * @param {string} username - The username to check.
+ * @param {ObjectId} [excludeUserId] - An optional user id to exclude from the search.
+ * @returns {Promise<boolean>}
+ */
+userSchema.statics.isUsernameTaken = async function (username, excludeUserId) {
+  const query = { username };
+  if (excludeUserId) {
+    query._id = { $ne: excludeUserId };
+  }
+  const user = await this.findOne(query);
+  return !!user;
+};
+
 
 const User = mongoose.model('User', userSchema);
 
