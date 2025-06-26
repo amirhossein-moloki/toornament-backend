@@ -1,45 +1,59 @@
 import mongoose from 'mongoose';
 
+// اسکیمای داخلی برای اطلاعات لابی بازی
+const lobbySchema = new mongoose.Schema({
+    code: { 
+        type: String, 
+        trim: true 
+    },
+    password: { 
+        type: String, 
+        trim: true 
+    },
+    isPublished: { 
+        type: Boolean, 
+        default: false 
+    },
+}, { _id: false });
+
+
+// اسکیمای شرکت‌کننده با وضعیت‌های دقیق‌تر
 const participantSchema = new mongoose.Schema({
   participantId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
+    refPath: 'participants.participantModel'
   },
   participantModel: {
     type: String,
     required: true,
     enum: ['User', 'Team'],
   },
-  ready: {
-    type: Boolean,
-    default: false,
-  },
-  score: {
-    type: Number,
-  },
-});
+  status: {
+    type: String,
+    enum: ['pending', 'ready', 'in_game'],
+    default: 'pending'
+  }
+}, { _id: false });
 
-// جدید: اسکیمای نتایج برای بازی‌های بتل رویال
-const resultSchema = new mongoose.Schema({
+// جدید: اسکیمای داخلی برای نتایج مسابقات استاندارد (Versus)
+const scoreSchema = new mongoose.Schema({
     participantId: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        refPath: 'results.participantModel'
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      refPath: 'scores.participantModel'
     },
     participantModel: {
-        type: String,
-        required: true,
-        enum: ['User', 'Team']
+      type: String,
+      required: true,
+      enum: ['User', 'Team'],
     },
-    rank: {
-        type: Number,
-        required: true
-    },
-    kills: {
-        type: Number,
-        default: 0
+    score: {
+      type: Number,
+      required: true,
+      min: 0
     }
-});
+}, { _id: false });
 
 
 const matchSchema = new mongoose.Schema(
@@ -71,17 +85,31 @@ const matchSchema = new mongoose.Schema(
       ],
       default: 'pending',
     },
-    participants: {
-      type: [participantSchema],
-      // اعتبار سنجی تعداد شرکت کنندگان حذف شد تا برای بتل رویال نیز قابل استفاده باشد
-    },
-    // این فیلد برای بازی‌های رودررو (1v1, 5v5) استفاده می‌شود
+    participants: [participantSchema],
+    
+    // اصلاحیه نهایی: بازگرداندن ساختار 'scores' برای مسابقات استاندارد
+    scores: [scoreSchema],
+    
+    // ساختار 'results' برای مسابقات بتل رویال حفظ شده است
+    results: [{
+        participantId: {
+            type: mongoose.Schema.Types.ObjectId,
+            required: true,
+            refPath: 'results.participantModel'
+        },
+        participantModel: {
+            type: String,
+            required: true,
+            enum: ['User', 'Team']
+        },
+        rank: { type: Number, required: true },
+        kills: { type: Number, default: 0 }
+    }],
+    
     winner: {
       participantId: mongoose.Schema.Types.ObjectId,
       participantModel: String,
     },
-    // جدید: این فیلد برای ثبت نتایج کامل بازی‌های بتل رویال استفاده می‌شود
-    results: [resultSchema],
     reportedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
@@ -89,31 +117,28 @@ const matchSchema = new mongoose.Schema(
     scheduledTime: {
       type: Date,
     },
+    lobbyDetails: lobbySchema,
   },
   {
     timestamps: true,
   }
 );
 
-/**
- * @description Middleware برای اعمال قوانین یکپارچگی داده قبل از ذخیره‌سازی.
- * این تابع تضمین می‌کند که یک مسابقه تکمیل شده، یا برنده (برای بازی‌های رودررو)
- * یا لیست نتایج (برای بتل رویال) را داشته باشد.
- */
+// اصلاحیه نهایی: اعتبارسنجی کامل برای تمام انواع نتایج
 matchSchema.pre('save', function(next) {
   if (this.isModified('status') && this.status === 'completed') {
     const hasWinner = this.winner && this.winner.participantId;
+    const hasScores = this.scores && this.scores.length > 0;
     const hasResults = this.results && this.results.length > 0;
 
-    // اگر مسابقه تکمیل شده ولی نه برنده‌ای دارد و نه لیستی از نتایج، خطا ایجاد کن
-    if (!hasWinner && !hasResults) {
-      const err = new Error('یک مسابقه تکمیل شده باید یا یک برنده مشخص یا لیستی از نتایج داشته باشد.');
+    // یک مسابقه تکمیل‌شده باید یا برنده مشخص، یا نتایج امتیازی، یا نتایج رتبه‌بندی داشته باشد
+    if (!hasWinner && !hasScores && !hasResults) {
+      const err = new Error('A completed match must have a winner, scores, or results.');
       return next(err);
     }
   }
   next();
 });
-
 
 const Match = mongoose.model('Match', matchSchema);
 
