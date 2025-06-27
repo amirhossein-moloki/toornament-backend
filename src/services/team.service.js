@@ -41,7 +41,6 @@ async function queryTeams(filter, options) {
  * @desc    دریافت اطلاعات یک تیم با شناسه
  */
 async function getTeamById(id) {
-  // Populate game info to access teamSize later if needed
   const team = await Team.findById(id).populate('members', 'username avatar').populate('game', 'name teamSize');
   if (!team) {
     throw new ApiError(404, 'تیم یافت نشد.');
@@ -69,7 +68,7 @@ async function createTeam(teamData) {
     return newTeam;
   } catch (error) {
     await session.abortTransaction();
-    if (error.code === 11000) { // Duplicate key error
+    if (error.code === 11000) {
         throw new ApiError(400, 'نام یا تگ تیم تکراری است.');
     }
     throw error;
