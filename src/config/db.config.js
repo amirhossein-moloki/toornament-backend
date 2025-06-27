@@ -45,7 +45,7 @@ const connectDB = () => {
   process.on('SIGINT', async () => {
     await dbConnection.close();
     logger.info('اتصال به پایگاه داده قبل از خروج از برنامه بسته شد.');
-    process.exit(0);
+    process.exit(0);``
   });
 };
 
