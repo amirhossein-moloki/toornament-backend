@@ -37,7 +37,7 @@ router.post(
     ]),
     registrationController.registerForTournament
 );
-
+  
 // ===================================
 // Admin/Manager Routes
 // ===================================
