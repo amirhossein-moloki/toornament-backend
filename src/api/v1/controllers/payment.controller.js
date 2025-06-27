@@ -131,7 +131,7 @@ async function verifyWalletCharge(authority, status, transactionId) {
         session.endSession();
     }
 }
-    
+
 export default {
     createWalletChargeRequest,
     verifyWalletCharge,
