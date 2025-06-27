@@ -13,7 +13,7 @@ const pick = (object, keys) => {
         obj[key] = object[key];
       }
       return obj;
-    }, {});
+    }, {}); 
   };
   
   export default pick;
