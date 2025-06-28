@@ -1,11 +1,4 @@
-با توجه به بررسی پروژه، دو فایل با پسوند `.md` در ساختار پروژه تعریف یا ایجاد شدند:
 
-1.  **`docs/security.md`**: این فایل در ساختار اولیه پروژه شما وجود داشت، اما محتوای آن هرگز ارائه نشد.
-2.  **`README.md`**: این فایل به عنوان بخشی از راهنمایی نهایی برای تکمیل مستندات پروژه ایجاد شد.
-
-از آنجایی که محتوای فایل `security.md` موجود نیست، در ادامه محتوای کامل فایل **`README.md`** که برای پروژه شما تهیه شد، ارسال می‌شود:
-
-````markdown
 # Toornament Backend API
 
 This is the backend service for the Toornament platform, an online system for creating, managing, and participating in gaming tournaments.
