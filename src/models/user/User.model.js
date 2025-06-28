@@ -1,5 +1,8 @@
+// src/models/user/User.model.js
+
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
+import validator from 'validator'; // Import the validator library
 
 const userSchema = new mongoose.Schema(
   {
@@ -30,7 +33,7 @@ const userSchema = new mongoose.Schema(
     email: {
       type: String,
       unique: true,
-      sparse: true,
+      sparse: true, // Allows null values to be unique
       trim: true,
       lowercase: true,
       maxlength: [100, 'ایمیل نمی‌تواند بیشتر از ۱۰۰ کاراکتر باشد.'],
@@ -38,7 +41,21 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: [true, 'رمز عبور الزامی است.'],
-      select: false,
+      select: false, // Ensures password is not returned by default queries
+      validate: {
+        validator: function(v) {
+          // Using validator.isStrongPassword with default options that match requirements:
+          // minLength: 8, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 1
+          return validator.isStrongPassword(v, {
+            minLength: 8,
+            minLowercase: 1,
+            minUppercase: 1,
+            minNumbers: 1,
+            minSymbols: 1,
+          });
+        },
+        message: 'رمز عبور باید حداقل ۸ کاراکتر شامل حداقل یک حرف بزرگ، یک حرف کوچک، یک عدد و یک کاراکتر ویژه (!@#$%^&*) باشد.',
+      },
     },
     avatar: {
       type: String,
@@ -132,7 +149,6 @@ userSchema.methods.isPasswordCorrect = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
 
-
 // ================================================
 // متدهای استاتیک (برای استفاده در سرویس‌ها)
 // ================================================
@@ -164,7 +180,6 @@ userSchema.statics.isUsernameTaken = async function (username, excludeUserId) {
   const user = await this.findOne(query);
   return !!user;
 };
-
 
 const User = mongoose.model('User', userSchema);
 
