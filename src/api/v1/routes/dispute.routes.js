@@ -7,9 +7,9 @@ import {
     addCommentToDispute,
     resolveDispute
 } from '../controllers/dispute.controller.js';
-import { verifyJWT } from '@/middlewares/auth.middleware.js'; // Import authentication middleware
-import { rbacGuard } from '@/middlewares/rbac.guard.js'; // Import RBAC guard middleware
-import { authorizeDisputeAccess } from '@/middlewares/dispute.middleware.js'; // Import custom dispute authorization middleware
+import { verifyJWT } from '#middlewares/auth.middleware.js'; // Import authentication middleware
+import { rbacGuard } from '#middlewares/rbac.guard.js'; // Import RBAC guard middleware
+import { authorizeDisputeAccess } from '#middlewares/dispute.middleware.js'; // Import custom dispute authorization middleware
 
 const router = Router();
 

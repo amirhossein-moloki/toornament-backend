@@ -1,7 +1,7 @@
 // src/utils/lockManager.js
 
-import redisClient from '@/config/redisClient.js'; // Import the Redis client
-import logger from '@/utils/logger'; // Assuming you have a logger utility
+import redisClient from '#config/redisClient.js'; // Import the Redis client
+import logger from '#utils/logger'; // Assuming you have a logger utility
 
 const LOCK_PREFIX = 'job_lock:'; // Prefix for Redis lock keys
 

@@ -1,7 +1,7 @@
 // src/middlewares/auth.middleware.js
 
-import { ApiError } from '@/utils/ApiError.js'; // Adjust the import path as necessary
-import { asyncHandler } from '@/utils/asyncHandler.js'; // Assuming asyncHandler exists
+import { ApiError } from '#utils/ApiError.js'; // Adjust the import path as necessary
+import { asyncHandler } from '#utils/asyncHandler.js'; // Assuming asyncHandler exists
 
 /**
  * @desc Middleware to verify JWT token and attach user data to req.

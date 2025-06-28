@@ -1,4 +1,4 @@
-import pick from '../../../src/utils/pick';
+import pick from '#utils/pick';
 
 describe('pick utility', () => {
   it('should return a new object with only the specified keys', () => {

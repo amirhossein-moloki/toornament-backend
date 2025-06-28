@@ -1,6 +1,6 @@
-import tournamentService from '@/services/tournament.service.js';
-import { asyncWrapper } from '@/utils/async.wrapper.js';
-import { pick } from '@/utils/pick.js';
+import tournamentService from '#services/tournament.service.js';
+import { asyncWrapper } from '#utils/async.wrapper.js';
+import { pick } from '#utils/pick.js';
 
 /**
  * @desc    دریافت لیست تورنومنت‌ها با صفحه‌بندی

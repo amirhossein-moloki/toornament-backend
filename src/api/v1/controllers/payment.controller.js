@@ -1,8 +1,8 @@
 // src/controllers/payment.controller.js
 
-import paymentService from '@/services/payment.service.js';
-import { asyncWrapper } from '@/utils/async.wrapper.js';
-import { ApiResponse } from '@/utils/ApiResponse.js';
+import paymentService from '#services/payment.service.js';
+import { asyncWrapper } from '#utils/async.wrapper.js';
+import { ApiResponse } from '#utils/ApiResponse.js';
 
 /**
  * @desc کنترلر برای ایجاد درخواست شارژ کیف پول.

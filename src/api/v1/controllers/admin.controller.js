@@ -1,5 +1,5 @@
-import adminService from '@/services/admin.service.js';
-import { asyncWrapper } from '@/utils/async.wrapper.js';
+import adminService from '#services/admin.service.js';
+import { asyncWrapper } from '#utils/async.wrapper.js';
 
 /**
  * @desc    Controller to get dashboard statistics.

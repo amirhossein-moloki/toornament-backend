@@ -1,4 +1,4 @@
-import logger from '@/utils/logger.js'; // Adjust path if necessary based on your project structure
+import logger from '#utils/logger.js'; // Adjust path if necessary based on your project structure
 
 /**
  * Sets up graceful shutdown for the HTTP server and Mongoose connection.

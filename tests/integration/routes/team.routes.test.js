@@ -4,11 +4,11 @@ import request from 'supertest';
 import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import jwt from 'jsonwebtoken';
-import app from '~/app.js'; // The main Express app
-import User from '@/models/user/User.model.js';
-import Game from '@/models/shared/Game.model.js';
-import Team from '@/models/shared/Team.model.js';
-import config from '@/config/server.config.js'; // For JWT secret
+import app from 'app'; // The main Express app
+import User from '#models/user/User.model.js';
+import Game from '#models/shared/Game.model.js';
+import Team from '#models/shared/Team.model.js';
+import config from '#config/server.config.js'; // For JWT secret
 
 describe('/api/v1/teams routes', () => {
     let mongoServer;

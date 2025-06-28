@@ -1,13 +1,13 @@
 // src/services/team.service.js
 
 import mongoose from 'mongoose';
-import Team from '@/models/shared/Team.model.js';
-import User from '@/models/user/User.model.js';
-import Game from '@/models/shared/Game.model.js';
-import Registration from '@/models/user/Registration.model.js';
-import { ApiError } from '@/utils/ApiError.js';
-import redisClient from '@/config/redisClient.js'; // وارد کردن کلاینت Redis
-import logger from '@/utils/logger.js'; // وارد کردن لاگر
+import Team from '#models/shared/Team.model.js';
+import User from '#models/user/User.model.js';
+import Game from '#models/shared/Game.model.js';
+import Registration from '#models/user/Registration.model.js';
+import { ApiError } from '#utils/ApiError.js';
+import redisClient from '#config/redisClient.js'; // وارد کردن کلاینت Redis
+import logger from '#utils/logger.js'; // وارد کردن لاگر
 
 // تعریف ثابت‌ها برای مدیریت کش
 const TEAM_CACHE_PREFIX = 'team:';

@@ -1,6 +1,6 @@
 // src/utils/jobRunner.js
 
-import logger from '@/utils/logger.js'; // Adjust path if necessary based on your project structure
+import logger from '#utils/logger.js'; // Adjust path if necessary based on your project structure
 import { acquireLock, releaseLock } from './lockManager.js'; // Import the new lockManager utility
 
 // Default lock timeout for jobs (e.g., 5 minutes)

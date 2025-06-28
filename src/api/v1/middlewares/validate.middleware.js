@@ -1,5 +1,5 @@
 import { validationResult } from 'express-validator';
-import { ApiError } from '@/utils/ApiError.js';
+import { ApiError } from '#utils/ApiError.js';
 
 /**
  * A middleware that runs validation chains and handles errors.

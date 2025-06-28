@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import teamController from '@/controllers/team.controller.js';
-import { validate } from '@/middlewares/validate.middleware.js';
-import { teamValidators } from '@/validators/team.validator.js';
-import { authGuard } from '@/middlewares/auth.guard.js';
-import { isCaptainGuard } from '@/middlewares/team.guard.js';
+import teamController from '#controllers/team.controller.js';
+import { validate } from '#middlewares/validate.middleware.js';
+import { teamValidators } from '#validators/team.validator.js';
+import { authGuard } from '#middlewares/auth.guard.js';
+import { isCaptainGuard } from '#middlewares/team.guard.js';
 
 const router = Router();
 

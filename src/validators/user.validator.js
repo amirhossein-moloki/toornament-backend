@@ -1,5 +1,5 @@
 import { body, query, param } from 'express-validator';
-import User from '@/models/user.model.js';
+import User from '#models/User.js';
 
 const USER_ROLES = ['user', 'tournament_manager', 'support', 'admin'];
 const USER_STATUSES = ['active', 'banned', 'pending_verification'];

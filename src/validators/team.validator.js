@@ -1,5 +1,5 @@
 import { body, query, param } from 'express-validator';
-import Team from '@/models/team.model.js';
+import Team from '#models/shared/Team.model';
 
 export const teamValidators = {
   /**

@@ -1,9 +1,9 @@
 import request from 'supertest';
 import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import app from '~/app.js'; // The main Express app
-import User from '@/models/user/User.model.js';
-import authService from '@/services/auth.service.js';
+import app from 'app'; // The main Express app
+import User from '#models/user/User.model.js';
+import authService from '#services/auth.service.js';
 
 // Mock the external SMS service to prevent actual SMS sending during tests
 jest.mock('../../../src/services/sms.service.js', () => ({

@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import userController from '@/controllers/user.controller.js';
-import { validate } from '@/middlewares/validate.middleware.js';
-import { userValidators } from '@/validators/user.validators.js';
-import { authGuard } from '@/middlewares/auth.guard.js';
-import { rbacGuard } from '@/middlewares/rbac.guard.js';
+import userController from '#controllers/user.controller.js';
+import { validate } from '#middlewares/validate.middleware.js';
+import { userValidators } from '#validators/user.validators.js';
+import { authGuard } from '#middlewares/auth.guard.js';
+import { rbacGuard } from '#middlewares/rbac.guard.js';
 
 const router = Router();
 

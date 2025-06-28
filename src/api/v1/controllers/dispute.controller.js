@@ -5,10 +5,10 @@ import {
     getDisputeByIdService,
     addCommentToDisputeService,
     resolveDisputeService
-} from '@/services/dispute.service.js';
-import { ApiResponse } from '@/utils/ApiResponse.js';
-import { ApiError } from '@/utils/ApiError.js'; // Keep ApiError for specific business logic errors if needed
-import { asyncHandler } from '@/utils/asyncHandler.js'; // Assuming you have an asyncHandler utility
+} from '#services/dispute.service.js';
+import { ApiResponse } from '#utils/ApiResponse.js';
+import { ApiError } from '#utils/ApiError.js'; // Keep ApiError for specific business logic errors if needed
+import { asyncHandler } from '#utils/asyncHandler.js'; // Assuming you have an asyncHandler utility
 
 /**
  * @desc    Controller handler for creating a new dispute.

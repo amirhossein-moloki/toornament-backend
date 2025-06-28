@@ -1,6 +1,6 @@
-import User from '@/models/user/User.model.js';
-import Team from '@/models/shared/Team.model.js';
-import { ApiError } from '@/utils/ApiError.js';
+import User from '#models/user/User.model.js';
+import Team from '#models/shared/Team.model.js';
+import { ApiError } from '#utils/ApiError.js';
 import mongoose from 'mongoose';
 
 // The K-factor determines the maximum possible change in rating.

@@ -1,11 +1,11 @@
 // src/jobs/notification.job.js
 
 import cron from 'node-cron';
-import Match from '@/models/tournament/Match.model.js';
-import Notification from '@/models/shared/Notification.model.js';
-import notificationService from '@/services/notification.service.js';
-import logger from '@/utils/logger.js';
-import { executeJob } from '@/utils/jobRunner.js'; // Import the new jobRunner utility
+import Match from '#models/tournament/Match.model.js';
+import Notification from '#models/shared/Notification.model.js';
+import notificationService from '#services/notification.service.js';
+import logger from '#utils/logger.js';
+import { executeJob } from '#utils/jobRunner.js'; // Import the new jobRunner utility
 
 // Define a reasonable lock timeout for this job (e.g., 10 minutes)
 const MATCH_REMINDER_JOB_LOCK_TIMEOUT_MS = 10 * 60 * 1000;

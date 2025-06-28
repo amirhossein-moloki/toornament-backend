@@ -1,10 +1,10 @@
 import mongoose from 'mongoose';
-import Tournament from '@/models/tournament/Tournament.model.js';
-import Registration from '@/models/user/Registration.model.js';
-import Match from '@/models/tournament/Match.model.js';
-import Bracket from '@/models/tournament/Bracket.model.js';
-import Dispute from '@/models/tournament/Dispute.model.js';
-import { ApiError } from '@/utils/ApiError.js';
+import Tournament from '#models/tournament/Tournament.model.js';
+import Registration from '#models/user/Registration.model.js';
+import Match from '#models/tournament/Match.model.js';
+import Bracket from '#models/tournament/Bracket.model.js';
+import Dispute from '#models/tournament/Dispute.model.js';
+import { ApiError } from '#utils/ApiError.js';
 import _ from 'lodash'; // A utility library for array manipulation
 
 /**

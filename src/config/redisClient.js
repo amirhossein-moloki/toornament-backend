@@ -1,6 +1,6 @@
 // src/config/redisClient.js
 import Redis from 'ioredis';
-import logger from '@/utils/logger.js'; // Assuming you have a logger utility
+import logger from '#utils/logger.js'; // Assuming you have a logger utility
 
 // Configure your Redis connection here.
 // In a real application, these details would come from environment variables.

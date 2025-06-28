@@ -1,6 +1,6 @@
-import teamService from '@/services/team.service.js';
-import { asyncWrapper } from '@/utils/async.wrapper.js';
-import pick from '@/utils/pick.js';
+import teamService from '#services/team.service.js';
+import { asyncWrapper } from '#utils/async.wrapper.js';
+import pick from '#utils/pick.js';
 
 // --- Public Controllers ---
 

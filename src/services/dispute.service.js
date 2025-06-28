@@ -1,9 +1,9 @@
 // src/api/v1/services/dispute.service.js
 
 import mongoose from 'mongoose';
-import Dispute from '@/models/tournament/Dispute.model.js';
-import Match from '@/models/tournament/Match.model.js';
-import { ApiError } from '@/utils/ApiError.js';
+import Dispute from '#models/tournament/Dispute.model.js';
+import Match from '#models/tournament/Match.model.js';
+import { ApiError } from '#utils/ApiError.js';
 
 /**
  * @desc    Creates a new dispute for a match transactionally.

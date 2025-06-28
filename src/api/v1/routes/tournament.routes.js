@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import tournamentController from '@/controllers/tournament.controller.js';
-import registrationController from '@/controllers/registration.controller.js';
-import { validate } from '@/middlewares/validate.middleware.js';
-import { tournamentValidators } from '@/validators/tournament.validator.js';
-import { authGuard } from '@/middlewares/auth.guard.js';
-import { rbacGuard } from '@/middlewares/rbac.guard.js';
+import tournamentController from '#controllers/tournament.controller.js';
+import registrationController from '#controllers/registration.controller.js';
+import { validate } from '#middlewares/validate.middleware.js';
+import { tournamentValidators } from '#validators/tournament.validator.js';
+import { authGuard } from '#middlewares/auth.guard.js';
+import { rbacGuard } from '#middlewares/rbac.guard.js';
 
 const router = Router();
 

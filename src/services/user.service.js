@@ -1,9 +1,9 @@
 import mongoose from 'mongoose';
-import User from '@/models/user/User.model.js';
-import Registration from '@/models/user/Registration.model.js';
-import Team from '@/models/shared/Team.model.js';
-import Dispute from '@/models/tournament/Dispute.model.js';
-import { ApiError } from '@/utils/ApiError.js';
+import User from '#models/user/User.model.js';
+import Registration from '#models/user/Registration.model.js';
+import Team from '#models/shared/Team.model.js';
+import Dispute from '#models/tournament/Dispute.model.js';
+import { ApiError } from '#utils/ApiError.js';
 
 /**
  * @desc    دریافت لیست کاربران با صفحه‌بندی (بهینه‌سازی شده)

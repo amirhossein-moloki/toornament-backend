@@ -1,6 +1,6 @@
-import authService from '@/services/auth.service.js';
-import { asyncWrapper } from '@/utils/async.wrapper.js'; // فرض می‌شود این ابزار کمکی برای مدیریت خطا وجود دارد
-import { ApiError } from '@/utils/ApiError.js'; // فرض می‌شود این ابزار برای مدیریت خطاها وجود دارد
+import authService from '#services/auth.service.js';
+import { asyncWrapper } from '#utils/async.wrapper.js'; // فرض می‌شود این ابزار کمکی برای مدیریت خطا وجود دارد
+import { ApiError } from '#utils/ApiError.js'; // فرض می‌شود این ابزار برای مدیریت خطاها وجود دارد
 
 /**
  * @desc    ارسال کد تایید (OTP) به شماره تلفن کاربر

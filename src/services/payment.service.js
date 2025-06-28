@@ -2,11 +2,11 @@
 
 import axios from 'axios';
 import mongoose from 'mongoose';
-import config from '@/config/server.config.js';
-import { ApiError } from '@/utils/ApiError.js';
-import User from '@/models/user/User.model.js';
-import Transaction from '@/models/shared/Transaction.model.js';
-import logger from '@/utils/logger.js';
+import config from '#config/server.config.js';
+import { ApiError } from '#utils/ApiError.js';
+import User from '#models/user/User.model.js';
+import Transaction from '#models/shared/Transaction.model.js';
+import logger from '#utils/logger.js';
 
 // تمام ثابت‌های مربوط به زرین‌پال به اینجا منتقل می‌شوند
 const ZARINPAL_API_BASE = config.zarinpal.sandbox
