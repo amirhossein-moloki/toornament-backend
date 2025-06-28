@@ -1,140 +1,104 @@
-import mongoose from 'mongoose';
-import Dispute from '../models/tournament/Dispute.model.js';
-import Match from '../models/tournament/Match.model.js';
-import { ApiError } from '../utils/ApiError.js';
+// src/api/v1/controllers/dispute.controller.js
+
+import {
+    createDisputeService,
+    getDisputeByIdService,
+    addCommentToDisputeService,
+    resolveDisputeService
+} from '@/services/dispute.service.js';
+import { ApiResponse } from '@/utils/ApiResponse.js';
+import { ApiError } from '@/utils/ApiError.js'; // Keep ApiError for specific business logic errors if needed
+import { asyncHandler } from '@/utils/asyncHandler.js'; // Assuming you have an asyncHandler utility
 
 /**
- * @desc    ایجاد یک اختلاف جدید برای یک مسابقه به صورت تراکنشی
- * @param {object} disputeData - داده‌های اختلاف
- * @returns {Promise<object>}
+ * @desc    Controller handler for creating a new dispute.
+ * @route   POST /api/v1/disputes
+ * @access  Protected (Participant) - Authorization is handled by middleware
+ * @description This controller extracts dispute data and reporter ID from the request and
+ * calls the dispute service to create a new dispute.
  */
-async function createDispute(disputeData) {
-  const { match: matchId, reporter: reporterId } = disputeData;
+const createDispute = asyncHandler(async (req, res) => {
+    // Extract dispute data from request body and add reporter ID from authenticated user
+    const disputeData = {
+        ...req.body,
+        reporter: req.user._id // req.user is set by verifyJWT middleware
+    };
 
-  const session = await mongoose.startSession();
-  session.startTransaction();
-  try {
-    const match = await Match.findById(matchId).session(session);
-    if (!match) {
-      throw new ApiError(404, 'مسابقه یافت نشد.');
-    }
+    // Call the service layer to handle the business logic and database operations
+    const newDispute = await createDisputeService(disputeData);
 
-    // ۱. بررسی اینکه گزارش‌دهنده یکی از شرکت‌کنندگان است
-    const isParticipant = match.participants.some(p => p.participantId.toString() === reporterId.toString());
-    if (!isParticipant) {
-      throw new ApiError(403, 'شما اجازه ایجاد اختلاف برای این مسابقه را ندارید.');
-    }
-
-    // ۲. بررسی اینکه آیا برای این مسابقه قبلاً اختلاف ثبت شده است
-    const existingDispute = await Dispute.findOne({ match: matchId }).session(session);
-    if (existingDispute) {
-      throw new ApiError(400, 'برای این مسابقه قبلاً یک اختلاف ثبت شده است.');
-    }
-    
-    // ۳. تغییر وضعیت مسابقه به "مورد اختلاف"
-    match.status = 'disputed';
-    await match.save({ session });
-
-    // ۴. ایجاد سند اختلاف
-    const newDispute = new Dispute(disputeData);
-    await newDispute.save({ session });
-    
-    await session.commitTransaction();
-    return newDispute;
-
-  } catch (error) {
-    await session.abortTransaction();
-    throw error;
-  } finally {
-    session.endSession();
-  }
-}
+    // Send back the appropriate HTTP response
+    res.status(201).json(new ApiResponse(201, newDispute, 'اختلاف با موفقیت ایجاد شد.'));
+});
 
 /**
- * @desc    دریافت اطلاعات یک اختلاف با شناسه
- * @param {string} disputeId - شناسه اختلاف
- * @param {string} requestingUserId - شناسه کاربر درخواست‌دهنده
- * @returns {Promise<object>}
+ * @desc    Controller handler for fetching a dispute by ID.
+ * @route   GET /api/v1/disputes/:id
+ * @access  Protected (Participant or Admin) - Authorization is handled by authorizeDisputeAccess middleware
+ * @description This controller extracts dispute ID from params and calls the dispute service
+ * to retrieve the dispute. Access is guaranteed by preceding middleware.
  */
-async function getDisputeById(disputeId, requestingUserId) {
-    const dispute = await Dispute.findById(disputeId)
-        .populate('match', 'participants')
-        .populate('reporter', 'username avatar')
-        .populate('comments.author', 'username avatar')
-        .lean();
+const getDisputeById = asyncHandler(async (req, res) => {
+    // Extract dispute ID from request parameters
+    const { id: disputeId } = req.params;
 
-    if (!dispute) {
-        throw new ApiError(404, 'اختلاف یافت نشد.');
-    }
+    // Call the service layer to retrieve the dispute. Access has already been authorized.
+    const dispute = await getDisputeByIdService(disputeId);
 
-    // منطق دسترسی: ادمین یا شرکت‌کنندگان مسابقه مربوطه
-    const isParticipant = dispute.match.participants.some(
-        p => p.participantId.toString() === requestingUserId
-    );
-    // TODO: افزودن بررسی نقش ادمین
-    // const isAdmin = req.user.role === 'admin';
-
-    if (!isParticipant) {
-        throw new ApiError(403, 'شما اجازه مشاهده این اختلاف را ندارید.');
-    }
-
-    return dispute;
-}
+    // Send back the appropriate HTTP response
+    res.status(200).json(new ApiResponse(200, dispute, 'اختلاف با موفقیت بازیابی شد.'));
+});
 
 /**
- * @desc    افزودن کامنت به یک اختلاف
+ * @desc    Controller handler for adding a comment to a dispute.
+ * @route   POST /api/v1/disputes/:id/comments
+ * @access  Protected (Participant or Admin) - Authorization is handled by authorizeDisputeAccess middleware
+ * @description This controller extracts dispute ID, comment content, and author ID from the request,
+ * and calls the dispute service to add the comment. Access is guaranteed by preceding middleware.
  */
-async function addCommentToDispute(disputeId, authorId, content) {
-    const dispute = await Dispute.findById(disputeId);
-    if (!dispute) throw new ApiError(404, 'اختلاف یافت نشد.');
+const addCommentToDispute = asyncHandler(async (req, res) => {
+    // Extract dispute ID from request parameters
+    const { id: disputeId } = req.params;
+    // Extract comment content from request body
+    const { content } = req.body;
+    // Extract author ID from authenticated user
+    const authorId = req.user._id; // req.user is set by verifyJWT middleware
 
-    // TODO: بررسی دسترسی کاربر برای کامنت گذاشتن (شرکت‌کننده یا ادمین)
-    
-    dispute.comments.push({ author: authorId, content });
-    await dispute.save();
-    return dispute;
-}
+    // Call the service layer to handle adding the comment. Access has already been authorized.
+    const updatedDispute = await addCommentToDisputeService(disputeId, authorId, content);
+
+    // Send back the appropriate HTTP response
+    res.status(200).json(new ApiResponse(200, updatedDispute, 'کامنت با موفقیت افزوده شد.'));
+});
 
 /**
- * @desc    رسیدگی و حل یک اختلاف توسط ادمین
+ * @desc    Controller handler for resolving a dispute by an admin.
+ * @route   PUT /api/v1/disputes/:id/resolve
+ * @access  Admin Protected - Authorization is handled by rbacGuard('admin') middleware
+ * @description This controller extracts dispute ID and resolution data, and calls the dispute
+ * service to resolve it. Admin role is guaranteed by preceding middleware.
  */
-async function resolveDispute(disputeId, adminId, resolutionData) {
-    const session = await mongoose.startSession();
-    session.startTransaction();
-    try {
-        const dispute = await Dispute.findById(disputeId).session(session);
-        if (!dispute) throw new ApiError(404, 'اختلاف یافت نشد.');
+const resolveDispute = asyncHandler(async (req, res) => {
+    // Admin role check is now handled entirely by the rbacGuard middleware in the routes.
+    // No manual check (if req.user.role !== 'admin') is needed here.
 
-        if (dispute.status !== 'under_review' && dispute.status !== 'open') {
-            throw new ApiError(400, `نمی‌توان اختلافی با وضعیت '${dispute.status}' را حل کرد.`);
-        }
-        
-        dispute.status = 'resolved';
-        dispute.assignedTo = adminId;
-        dispute.resolution = resolutionData;
-        
-        // TODO: بر اساس تصمیم نهایی ادمین، نتیجه مسابقه را تغییر بده
-        // (مثلا برنده را عوض کن، مسابقه را لغو کن و ...)
-        // const match = await Match.findById(dispute.match).session(session);
-        // ... apply resolution logic to the match ...
-        // await match.save({ session });
+    // Extract dispute ID from request parameters
+    const { id: disputeId } = req.params;
+    // Extract resolution data from request body
+    const resolutionData = req.body;
+    // Extract admin ID from authenticated user
+    const adminId = req.user._id; // req.user is set by verifyJWT middleware
 
-        await dispute.save({ session });
-        await session.commitTransaction();
-        return dispute;
+    // Call the service layer to handle resolving the dispute
+    const resolvedDispute = await resolveDisputeService(disputeId, adminId, resolutionData);
 
-    } catch(error) {
-        await session.abortTransaction();
-        throw error;
-    } finally {
-        session.endSession();
-    }
-}
+    // Send back the appropriate HTTP response
+    res.status(200).json(new ApiResponse(200, resolvedDispute, 'اختلاف با موفقیت حل شد.'));
+});
 
-
-export default {
-  createDispute,
-  getDisputeById,
-  addComment,
-  resolveDispute
+export {
+    createDispute,
+    getDisputeById,
+    addCommentToDispute,
+    resolveDispute
 };
