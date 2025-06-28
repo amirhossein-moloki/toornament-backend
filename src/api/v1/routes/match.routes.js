@@ -4,18 +4,13 @@ import { validate } from '#middlewares/validate.middleware.js';
 import { matchValidators } from '#validators/match.validator.js';
 import { authGuard } from '#middlewares/auth.guard.js';
 import { rbacGuard } from '#middlewares/rbac.guard.js';
+import { USER_ROLES } from '#config/constants.js';
 
 const router = Router();
 
 // ===================================
 // Public/Participant Routes
 // ===================================
-
-/**
- * @route   GET /api/v1/matches
- * @desc    دریافت لیست مسابقات (برای یک کاربر یا یک تورنومنت خاص)
- * @access  Private
- */
 router.get(
     '/',
     authGuard,
@@ -23,11 +18,6 @@ router.get(
     matchController.getMatches
 );
 
-/**
- * @route   GET /api/v1/matches/:id
- * @desc    دریافت جزئیات یک مسابقه خاص
- * @access  Private
- */
 router.get(
     '/:id',
     authGuard,
@@ -35,11 +25,6 @@ router.get(
     matchController.getMatchById
 );
 
-/**
- * @route   POST /api/v1/matches/:id/report-result
- * @desc    ثبت نتیجه یک مسابقه توسط یکی از شرکت‌کنندگان
- * @access  Private
- */
 router.post(
   '/:id/report-result',
   authGuard,
@@ -53,19 +38,13 @@ router.post(
 // ===================================
 // Admin/Manager Routes
 // ===================================
-
-/**
- * @route   PATCH /api/v1/matches/:id/lobby
- * @desc    تنظیم یا به‌روزرسانی اطلاعات لابی مسابقه توسط مدیر
- * @access  Private (Admin, Tournament Manager)
- */
 router.patch(
     '/:id/lobby',
     authGuard,
-    rbacGuard('admin', 'tournament_manager'),
+    rbacGuard(USER_ROLES.ADMIN, USER_ROLES.MANAGER),
     validate([
         ...matchValidators.getById,
-        ...matchValidators.updateLobby // اعتبارسنجی جدید برای بدنه درخواست
+        ...matchValidators.updateLobby
     ]),
     matchController.updateLobbyDetails
 );

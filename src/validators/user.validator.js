@@ -1,96 +1,88 @@
 import { body, query, param } from 'express-validator';
-import User from '#models/User.js';
-
-const USER_ROLES = ['user', 'tournament_manager', 'support', 'admin'];
-const USER_STATUSES = ['active', 'banned', 'pending_verification'];
+import User from '#models/user/User.model.js'; // Corrected path alias if necessary
+import { USER_ROLES, USER_STATUSES } from '#config/constants.js'; // Using centralized constants
 
 export const userValidators = {
   /**
-   * قوانین برای مسیر دریافت لیست کاربران توسط ادمین
-   * @route GET /api/v1/users
+   * Validation rules for the GET /users route (admin).
    */
   getUsers: [
     query('page')
       .optional()
-      .isInt({ min: 1 }).withMessage('شماره صفحه باید یک عدد مثبت باشد.'),
+      .isInt({ min: 1 }).withMessage('PAGE_MUST_BE_POSITIVE_INTEGER'),
     query('limit')
       .optional()
-      .isInt({ min: 1, max: 100 }).withMessage('تعداد آیتم‌ها در هر صفحه باید بین ۱ تا ۱۰۰ باشد.'),
+      .isInt({ min: 1, max: 100 }).withMessage('LIMIT_MUST_BE_BETWEEN_1_AND_100'),
   ],
 
   /**
-   * قوانین برای مسیرهایی که شامل پارامتر ID کاربر هستند
+   * Validation rules for routes with a user ID in params.
    */
   getUserById: [
-    param('id').isMongoId().withMessage('شناسه کاربر نامعتبر است.'),
+    param('id').isMongoId().withMessage('INVALID_USER_ID'),
   ],
 
   /**
-   * قوانین برای مسیر به‌روزرسانی پروفایل توسط خود کاربر
-   * @route PATCH /api/v1/users/me
+   * Validation rules for the PATCH /users/me route.
    */
   updateMe: [
     body('username')
       .optional()
       .trim()
-      .isLength({ min: 3, max: 20 }).withMessage('نام کاربری باید بین ۳ تا ۲۰ کاراکتر باشد.')
+      .isLength({ min: 3, max: 20 }).withMessage('USERNAME_MUST_BE_3_TO_20_CHARS')
       .custom(async (value, { req }) => {
         const user = await User.findOne({ username: value });
         if (user && user._id.toString() !== req.user.id) {
-          throw new Error('این نام کاربری قبلاً استفاده شده است.');
+          throw new Error('USERNAME_ALREADY_TAKEN');
         }
         return true;
       }),
     body('email')
       .optional()
-      .isEmail().withMessage('فرمت ایمیل نامعتبر است.')
+      .isEmail().withMessage('INVALID_EMAIL_FORMAT')
       .custom(async (value, { req }) => {
         const user = await User.findOne({ email: value });
         if (user && user._id.toString() !== req.user.id) {
-            throw new Error('این ایمیل قبلاً استفاده شده است.');
+          throw new Error('EMAIL_ALREADY_TAKEN');
         }
         return true;
       }),
-    body('avatar').optional().isURL().withMessage('آدرس آواتار باید یک URL معتبر باشد.'),
+    body('avatar').optional().isURL().withMessage('INVALID_AVATAR_URL'),
   ],
 
   /**
-   * قوانین برای مسیر به‌روزرسانی کاربر توسط ادمین
-   * @route PATCH /api/v1/users/:id
+   * Validation rules for the PATCH /users/:id route (admin).
    */
   updateUser: [
-    // اصلاحیه نهایی: افزودن بررسی یکتایی برای عملیات ادمین
     body('email')
       .optional()
-      .isEmail().withMessage('فرمت ایمیل نامعتبر است.')
+      .isEmail().withMessage('INVALID_EMAIL_FORMAT')
       .custom(async (value, { req }) => {
-        // بررسی می‌کند که آیا ایمیل جدید توسط کاربر دیگری استفاده شده است یا خیر
         const user = await User.findOne({ email: value });
-        // اگر کاربری با این ایمیل پیدا شد و شناسه او با شناسه کاربری که در حال ویرایش است متفاوت بود، خطا ایجاد کن
         if (user && user._id.toString() !== req.params.id) {
-          throw new Error('این ایمیل قبلاً توسط کاربر دیگری استفاده شده است.');
+          throw new Error('EMAIL_ALREADY_TAKEN');
         }
         return true;
       }),
     body('username')
       .optional()
       .trim()
-      .isLength({ min: 3, max: 20 })
+      .isLength({ min: 3, max: 20 }).withMessage('USERNAME_MUST_BE_3_TO_20_CHARS')
       .custom(async (value, { req }) => {
         const user = await User.findOne({ username: value });
         if (user && user._id.toString() !== req.params.id) {
-          throw new Error('این نام کاربری قبلاً توسط کاربر دیگری استفاده شده است.');
+          throw new Error('USERNAME_ALREADY_TAKEN');
         }
         return true;
       }),
     body('role')
       .optional()
-      .isIn(USER_ROLES).withMessage('نقش کاربر نامعتبر است.'),
+      .isIn(Object.values(USER_ROLES)).withMessage('INVALID_USER_ROLE'),
     body('status')
       .optional()
-      .isIn(USER_STATUSES).withMessage('وضعیت کاربر نامعتبر است.'),
+      .isIn(Object.values(USER_STATUSES)).withMessage('INVALID_USER_STATUS'),
     body('walletBalance')
       .optional()
-      .isInt({ min: 0 }).withMessage('موجودی کیف پول باید یک عدد صحیح و غیرمنفی باشد.'),
+      .isInt({ min: 0 }).withMessage('WALLET_BALANCE_MUST_BE_NON_NEGATIVE'),
   ],
 };

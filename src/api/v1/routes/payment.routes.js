@@ -3,7 +3,7 @@
 import { Router } from 'express';
 import paymentController from '#controllers/payment.controller.js';
 import { validate } from '#middlewares/validate.middleware.js';
-import { paymentValidators } from '##validators/payment.validator.js';
+import { paymentValidators } from '#validators/payment.validator.js';
 import { authGuard } from '#middlewares/auth.guard.js';
 
 const router = Router();
