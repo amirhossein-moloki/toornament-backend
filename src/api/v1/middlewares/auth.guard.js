@@ -1,7 +1,8 @@
 import jwt from 'jsonwebtoken';
-import User from '../../models/user/User.model.js';
-import { asyncWrapper } from '../utils/async.wrapper.js';
-import { ApiError } from '../utils/ApiError.js';
+import User from '@/models/User.js'; // فرض کردم User داخل src/models/User.js هست
+import { asyncWrapper } from '@/utils/async.wrapper.js';
+import { ApiError } from '@/utils/ApiError.js';
+
 
 export const authGuard = asyncWrapper(async (req, res, next) => {
     // ۱. استخراج توکن از هدر Authorization

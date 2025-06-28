@@ -1,5 +1,5 @@
-import authService from '../../services/auth.service.js';
-import { asyncWrapper } from '../utils/async.wrapper.js'; // فرض می‌شود این ابزار کمکی برای مدیریت خطا وجود دارد
+import authService from '@/services/auth.service.js'; // فرض می‌شود این سرویس برای مدیریت احراز هویت وجود دارد
+import { asyncWrapper } from '@/utils/async.wrapper'; // فرض می‌شود این ابزار کمکی برای مدیریت خطا وجود دارد
 
 // کنترلر برای ارسال OTP
 const sendOtp = asyncWrapper(async (req, res) => {

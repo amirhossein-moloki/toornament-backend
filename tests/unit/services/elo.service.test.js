@@ -1,12 +1,12 @@
 import mongoose from 'mongoose';
-import eloService from '../../../src/services/elo.service.js';
-import User from '../../../src/models/user/User.model.js';
-import Team from '../../../src/models/shared/Team.model.js';
-import { ApiError } from '../../../src/utils/ApiError.js';
+import eloService from '@/services/elo.service.js';
+import User from '@/models/user/User.model.js';
+import Team from '@/models/shared/Team.model.js';
+import { ApiError } from '@/utils/ApiError.js';
 
 // Mock the models to isolate the service logic from the database
-jest.mock('../../../src/models/user/User.model.js');
-jest.mock('../../../src/models/shared/Team.model.js');
+jest.mock('@/models/user/User.model.js');
+jest.mock('@/models/shared/Team.model.js');
 
 describe('Elo Service', () => {
   describe('updateEloForMatch', () => {
