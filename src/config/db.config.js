@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import config from './server.config.js'; // وارد کردن فایل پیکربندی اصلی
-import logger from '../utils/logger.js';   // وارد کردن ابزار لاگ‌گیری
+import logger from '@/utils/logger.js';   // وارد کردن ابزار لاگ‌گیری
 
 /**
  * @description به پایگاه داده MongoDB متصل می‌شود و شنونده‌های رویداد (event listeners)

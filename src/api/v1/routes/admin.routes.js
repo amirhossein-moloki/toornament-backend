@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import adminController from '../controllers/admin.controller.js';
-import { authGuard } from '../middlewares/auth.guard.js';
-import { rbacGuard } from '../middlewares/rbac.guard.js';
+import adminController from '@/controllers/admin.controller.js';
+import { authGuard } from '@/middlewares/auth.guard.js';
+import { rbacGuard } from '@/middlewares/rbac.guard.js';
 
 const router = Router();
 

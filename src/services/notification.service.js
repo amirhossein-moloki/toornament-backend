@@ -1,7 +1,7 @@
-import User from '../models/user/User.model.js';
-import Notification from '../models/shared/Notification.model.js';
-import logger from '../utils/logger.js';
-// import { queueNotificationForDispatch } from '../jobs/notification.queue.js'; // Ideal implementation
+import User from '@/models/user/User.model.js';
+import Notification from '@/models/shared/Notification.model.js';
+import logger from '@/utils/logger.js';
+// import { queueNotificationForDispatch } from '@/jobs/notification.queue.js'; // Ideal implementation
 
 /**
  * @private

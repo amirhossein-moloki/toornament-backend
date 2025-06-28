@@ -1,6 +1,6 @@
-import userService from '../../services/user.service.js';
-import { asyncWrapper } from '../utils/async.wrapper.js';
-import pick from '../utils/pick.js';
+import userService from '@/@/services/user.service.js';
+import { asyncWrapper } from '@/utils/async.wrapper.js';
+import pick from '@/utils/pick.js';
 
 // --- User-Facing Controllers ---
 

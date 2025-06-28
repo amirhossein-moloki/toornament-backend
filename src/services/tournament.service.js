@@ -1,10 +1,10 @@
 import mongoose from 'mongoose';
-import Tournament from '../models/tournament/Tournament.model.js';
-import Registration from '../models/user/Registration.model.js';
-import Match from '../models/tournament/Match.model.js';
-import Bracket from '../models/tournament/Bracket.model.js';
-import Dispute from '../models/tournament/Dispute.model.js';
-import { ApiError } from '../utils/ApiError.js';
+import Tournament from '@/models/tournament/Tournament.model.js';
+import Registration from '@/models/user/Registration.model.js';
+import Match from '@/models/tournament/Match.model.js';
+import Bracket from '@/models/tournament/Bracket.model.js';
+import Dispute from '@/models/tournament/Dispute.model.js';
+import { ApiError } from '@/utils/ApiError.js';
 import _ from 'lodash'; // A utility library for array manipulation
 
 /**
@@ -56,7 +56,7 @@ function _generateSingleEliminationMatches(tournamentId, bracketId, registration
  * @desc    دریافت لیست تورنومنت‌ها با صفحه‌بندی (بهینه‌سازی شده)
  */
 async function queryTournaments(options) {
-  // ... (کد این تابع بدون تغییر باقی می‌ماند)
+  // @. (کد این تابع بدون تغییر باقی می‌ماند)
   const { page = 1, limit = 10 } = options;
   const skip = (page - 1) * limit;
 
@@ -160,7 +160,7 @@ async function startTournamentAndGenerateBrackets(id) {
 }
 
 
-// ... (سایر توابع سرویس مانند getTournamentById, createTournament و ...)
+// @. (سایر توابع سرویس مانند getTournamentById, createTournament و @.)
 
 async function getTournamentById(id) {
     const tournament = await Tournament.findById(id).populate('game organizer', 'name username avatar');

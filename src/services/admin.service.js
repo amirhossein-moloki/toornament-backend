@@ -1,7 +1,7 @@
-import User from '../models/user/User.model.js';
-import Tournament from '../models/tournament/Tournament.model.js';
-import Transaction from '../models/shared/Transaction.model.js';
-import { ApiError } from '../utils/ApiError.js';
+import User from '@/models/user/User.model.js';
+import Tournament from '@/models/tournament/Tournament.model.js';
+import Transaction from '@/models/shared/Transaction.model.js';
+import { ApiError } from '@/utils/ApiError.js';
 
 /**
  * @desc    Fetches and aggregates key statistics for the admin dashboard.

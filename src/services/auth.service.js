@@ -1,8 +1,8 @@
 import otpGenerator from 'otp-generator';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import User from '../models/user/User.model.js';
-import { ApiError } from '../utils/ApiError.js'; // فرض بر وجود یک کلاس خطای سفارشی
+import User from '@/models/user/User.model.js';
+import { ApiError } from '@/utils/ApiError.js'; // فرض بر وجود یک کلاس خطای سفارشی
 // import { sendSms } from './sms.service.js'; // این سرویس باید به سرویس‌دهنده پیامک شما متصل شود
 
 /**

@@ -1,6 +1,6 @@
-import Team from '../../models/shared/Team.model.js';
-import { ApiError } from '../utils/ApiError.js';
-import { asyncWrapper } from '../utils/async.wrapper.js';
+import Team from '@/models/shared/Team.model.js';
+import { ApiError } from '@/utils/ApiError.js';
+import { asyncWrapper } from '@/utils/async.wrapper.js';
 
 /**
  * Middleware to check if the authenticated user is the captain of the team.

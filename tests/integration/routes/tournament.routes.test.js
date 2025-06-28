@@ -2,12 +2,12 @@ import request from 'supertest';
 import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import jwt from 'jsonwebtoken';
-import app from '../../../app.js';
-import User from '../../../src/models/user/User.model.js';
-import Game from '../../../src/models/shared/Game.model.js';
-import Tournament from '../../../src/models/tournament/Tournament.model.js';
-import Registration from '../../../src/models/user/Registration.model.js';
-import config from '../../../src/config/server.config.js';
+import app from '~/app.js';
+import User from '@/models/user/User.model.js';
+import Game from '@/models/shared/Game.model.js';
+import Tournament from '@/models/tournament/Tournament.model.js';
+import Registration from '@/models/user/Registration.model.js';
+import config from '@/config/server.config.js';
 
 describe('/api/v1/tournaments routes', () => {
   let mongoServer;

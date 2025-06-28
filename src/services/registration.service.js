@@ -1,9 +1,9 @@
 import mongoose from 'mongoose';
-import Registration from '../models/user/Registration.model.js';
-import Tournament from '../models/tournament/Tournament.model.js';
-import Team from '../models/shared/Team.model.js';
-import User from '../models/user/User.model.js';
-import { ApiError } from '../utils/ApiError.js';
+import Registration from '@/models/user/Registration.model.js';
+import Tournament from '@/models/tournament/Tournament.model.js';
+import Team from '@/models/shared/Team.model.js';
+import User from '@/models/user/User.model.js';
+import { ApiError } from '@/utils/ApiError.js';
 
 /**
  * @desc Handles the logic for registering a user/team for a tournament with transactional integrity.

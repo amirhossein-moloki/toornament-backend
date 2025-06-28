@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
-import Match from '../models/tournament/Match.model.js';
-import Tournament from '../models/tournament/Tournament.model.js';
-import { ApiError } from '../utils/ApiError.js';
+import Match from '@/models/tournament/Match.model.js';
+import Tournament from '@/models/tournament/Tournament.model.js';
+import { ApiError } from '@/utils/ApiError.js';
 import _ from 'lodash';
 
 /**
